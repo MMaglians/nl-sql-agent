@@ -8,8 +8,11 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "google-genai>=3.2,<4",
+    "matplotlib>=3.11.2",
     "mcp>=2.3,<3",
     "pydantic>=2.14.3",
+    "python-dotenv>=1.2.4",
 ]
 
 [project.scripts]

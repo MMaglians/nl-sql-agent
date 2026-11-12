@@ -12,3 +12,7 @@ wheels/
 # Project data and secrets
 data/
 .env
+
+# Local outputs
+logs/
+charts/
