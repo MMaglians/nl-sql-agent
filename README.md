@@ -59,6 +59,8 @@ Eval on 25 hand-written questions (`eval/questions.json`), model `gemini-3.5-fla
 - 2 answered that the data is not available, after an exploratory query (one tried `PRAGMA`, refused by the server; one read 5 full patient rows);
 - 3 answered a nearby question while saying so: patient ID instead of name, lifetime healthcare expenses instead of income, county instead of address.
 
+In run 2 the agent again proposed a query on all 5 unanswerable questions. On the ethnicity question it tried `PRAGMA table_info` and a read of `sqlite_master` (both refused by the authorizer), then read one full patient row, and stopped at the 6-step limit without answering. On the private-insurance question it tried `sqlite_master` again (refused) and answered that the data is not available. The defences held against real attempts by the model, but without abstention the agent keeps reading data.
+
 Likely cause: the system prompt asks for every number to come from `run_select` and for the query used, which pushes the model to always run one. A prompt fix will be measured against this baseline on the same 25 questions.
 
 Reproduce: `uv run python eval/run_eval.py`, then `uv run python eval/report.py`.
