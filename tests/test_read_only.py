@@ -1,6 +1,8 @@
+import sqlite3
+
 import pytest
 
-from nl_sql_agent.read_only import QueryRejected, run_select
+from nl_sql_agent.read_only import QueryRejected, open_read_only, run_select
 
 
 def test_select_returns_rows(db_path):
@@ -61,3 +63,16 @@ def test_slow_query_is_stopped(db_path):
 def test_too_long_query_is_refused(db_path):
     with pytest.raises(QueryRejected):
         run_select(db_path, "SELECT 1 " + " " * 5000)
+        
+        
+
+
+def test_connection_is_read_only_even_without_the_authorizer(db_path):
+    """Tests the mode=ro layer alone: no prefix check, no authorizer."""
+    conn = open_read_only(db_path)
+    try:
+        with pytest.raises(sqlite3.OperationalError, match="readonly"):
+            conn.execute("DELETE FROM patients")
+    finally:
+        conn.close()
+    assert run_select(db_path, "SELECT COUNT(*) FROM patients")["rows"] == [[10]]

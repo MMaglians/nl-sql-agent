@@ -30,6 +30,11 @@ def _authorizer(action, arg1, arg2, _db_name, _trigger):
         return sqlite3.SQLITE_OK
     return sqlite3.SQLITE_DENY
 
+def open_read_only(db_path: Path) -> sqlite3.Connection:
+    """Open the file so that this connection can never write to it."""
+    uri = f"{Path(db_path).resolve().as_uri()}?mode=ro" #mode=ro indicates that the db is open in read-only mode
+    return sqlite3.connect(uri, uri=True)
+
 
 def run_select(
     db_path: Path,
@@ -42,8 +47,7 @@ def run_select(
     if not sql.strip().upper().startswith(("SELECT", "WITH")):
         raise QueryRejected("Only SELECT queries are allowed")
 
-    uri = f"{Path(db_path).resolve().as_uri()}?mode=ro" #mode=ro opens filw in read mode only.
-    conn = sqlite3.connect(uri, uri=True)
+    conn = open_read_only(db_path)
     try:
         conn.set_authorizer(_authorizer) #record the function that SQLite queries before each operation.
         deadline = time.monotonic() + timeout_seconds
