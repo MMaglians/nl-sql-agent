@@ -77,7 +77,7 @@ Reproduce: `uv run python eval/run_eval.py`, then `uv run python eval/report.py`
 
 ## Costs
 
-- Gemini free tier: **0 €**. On the free tier Google may use prompts to improve its products, acceptable here only because the data is synthetic. Real patient data would need a paid tier with a data-processing agreement, or a local model.
+- Gemini free tier: **0 USD**. Under the Gemini API Additional Terms (read on 2026-11-13), for users in the EEA, Switzerland or the UK prompts and responses are not used to improve Google's products, even on unpaid quota; elsewhere the free tier may use them. I use only synthetic data either way. Real patient data would need a paid tier with a data-processing agreement, or a local model.
 - Paid tier estimate: `2184` input and `159` output tokens per question at `0.30` / `2.50` USD per 1M tokens ≈ `0.001` USD per question. Check current prices before quoting.
 
 ## Data
