@@ -22,6 +22,7 @@ SYSTEM_PROMPT = (
     "risolvere con questi dati, dillo. Alla fine indica la query usata."
 )
 
+
 def make_config(declarations) -> types.GenerateContentConfig:
     return types.GenerateContentConfig(
         system_instruction=SYSTEM_PROMPT,
@@ -30,26 +31,36 @@ def make_config(declarations) -> types.GenerateContentConfig:
         temperature=0,
     )
 
+
+def _usage(response) -> dict:
+    meta = response.usage_metadata
+    if meta is None:
+        return {}
+    return {
+        "input_tokens": meta.prompt_token_count,
+        "output_tokens": meta.candidates_token_count,
+        "thinking_tokens": meta.thoughts_token_count,  # billed as output
+    }
+
+
 def _close(history: list, text: str) -> str:
     """End the turn with a model message, so roles keep alternating."""
     history.append(types.Content(role="model", parts=[types.Part(text=text)]))
     return text
 
+
 async def execute(mcp_client, name: str, args: dict, confirm, trace: TraceLog) -> dict:
-    """Policy first (allow-list), then human approval, then the MCP server."""
+    """Policy first, then human approval, then the MCP server."""
     if name not in ALLOWED_TOOLS:
         return {"error": f"tool not allowed: {name}"}
     if name in NEEDS_APPROVAL:
-        """
-        Gemini is synchronous while MCP client is asynchronous
-        -> asyncio.to_thread does not block the connection MCP
-        """
         approved = await asyncio.to_thread(confirm, args.get("sql", ""))
         trace.event("approval", name=name, args=args, approved=approved)
         if not approved:
             return {"error": "The user rejected this query. Ask what to change."}
     result = await mcp_client.call_tool(name, args)
     return to_response(result)
+
 
 async def run_turn(llm, model: str, mcp_client, mcp_tools: list, history: list,
                    user_text: str, confirm, *, max_steps: int = 6,
@@ -66,7 +77,8 @@ async def run_turn(llm, model: str, mcp_client, mcp_tools: list, history: list,
         response = await asyncio.to_thread(
             generate_with_retry, llm, model=model, contents=history, config=config
         )
-        trace.event("model", step=step, seconds=round(time.perf_counter() - started, 2))
+        trace.event("model", step=step, seconds=round(time.perf_counter() - started, 2),
+                    **_usage(response))
 
         if not response.candidates or response.candidates[0].content is None:
             trace.event("error", step=step, text="empty response")
@@ -91,5 +103,3 @@ async def run_turn(llm, model: str, mcp_client, mcp_tools: list, history: list,
 
     trace.event("limit", max_steps=max_steps)
     return _close(history, f"Mi fermo: ho raggiunto il limite di {max_steps} passi."), last_result
-    
-    

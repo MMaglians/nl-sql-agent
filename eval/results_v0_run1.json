@@ -1,0 +1,352 @@
+[
+  {
+    "id": "q01",
+    "question": "Quanti pazienti ci sono in totale?",
+    "gold_sql": "SELECT COUNT(*) FROM patients",
+    "answer": "I dati presenti nel database sono **sintetici** (generati con Synthea).\n\nIn totale ci sono **111** pazienti.\n\nQuery usata:\n```sql\nSELECT count(*) FROM patients\n```",
+    "proposed_sql": [
+      "SELECT count(*) FROM patients"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 3.3,
+    "correct": true
+  },
+  {
+    "id": "q02",
+    "question": "Quanti pazienti ci sono per genere?",
+    "gold_sql": "SELECT gender, COUNT(*) FROM patients GROUP BY gender",
+    "answer": "I dati provengono da un database sintetico generato con Synthea. \n\nEcco il numero di pazienti per genere:\n- F: 62\n- M: 49\n\nQuery usata:\n```sql\nSELECT gender, COUNT(*) as count FROM patients GROUP BY gender;\n```",
+    "proposed_sql": [
+      "SELECT gender, COUNT(*) as count FROM patients GROUP BY gender;"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 3.2,
+    "correct": true
+  },
+  {
+    "id": "q03",
+    "question": "Quanti pazienti risultano deceduti?",
+    "gold_sql": "SELECT COUNT(*) FROM patients WHERE death_date IS NOT NULL",
+    "answer": "I dati presenti nel database sono sintetici (generati con Synthea).\n\nRisultano deceduti **12** pazienti.\n\n*Query usata:*\n```sql\nSELECT COUNT(*) AS deceduti FROM patients WHERE death_date IS NOT NULL\n```",
+    "proposed_sql": [
+      "SELECT COUNT(*) AS deceduti FROM patients WHERE death_date IS NOT NULL"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 2.9,
+    "correct": true
+  },
+  {
+    "id": "q04",
+    "question": "Quanti pazienti sono nati prima del 1970?",
+    "gold_sql": "SELECT COUNT(*) FROM patients WHERE birth_date < '1970-01-01'",
+    "answer": "I dati presenti in questo database sono sintetici (generati con Synthea). \n\nIl numero di pazienti nati prima del 1970 è 26.\n\n**Query utilizzata:**\n```sql\nSELECT COUNT(*) FROM patients WHERE birth_date < '1970-01-01'\n```",
+    "proposed_sql": [
+      "SELECT COUNT(*) FROM patients WHERE birth_date < '1970-01-01'"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 37.4,
+    "correct": true
+  },
+  {
+    "id": "q05",
+    "question": "Quanti pazienti ci sono per stato civile, escludendo quelli senza stato civile?",
+    "gold_sql": "SELECT marital, COUNT(*) FROM patients WHERE marital IS NOT NULL GROUP BY marital",
+    "answer": "Questi dati provengono da un database sintetico generato con Synthea. \n\nEcco il numero di pazienti per ciascuno stato civile (escludendo quelli senza stato civile):\n- **D** (Divorziato): 8\n- **M** (Sposato): 41\n- **S** (Celibe/Nubile): 17\n- **W** (Vedovo): 1\n\n*(Nota sui codici: M = Married, S = Single, D = Divorced, W = Widowed)*\n\n**Query usata:**\n```sql\nSELECT marital, COUNT(*) AS count FROM patients WHERE marital IS NOT NULL AND marital != '' GROUP BY marital\n```",
+    "proposed_sql": [
+      "SELECT marital, COUNT(*) AS count FROM patients WHERE marital IS NOT NULL AND marital != '' GROUP BY marital"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 2.8,
+    "correct": true
+  },
+  {
+    "id": "q06",
+    "question": "Qual è la contea con più pazienti, e quanti ne ha?",
+    "gold_sql": "SELECT county, COUNT(*) AS n FROM patients GROUP BY county ORDER BY n DESC LIMIT 1",
+    "answer": "La contea con più pazienti è Middlesex County, con 28 pazienti. \n*Nota: i dati sanitari presenti in questo database sono sintetici e generati artificialmente con Synthea.*\n\nQuery usata:\n```sql\nSELECT county, COUNT(*) as n_pazienti FROM patients GROUP BY county ORDER BY n_pazienti DESC LIMIT 1;\n```",
+    "proposed_sql": [
+      "SELECT county, COUNT(*) as n_pazienti FROM patients GROUP BY county ORDER BY n_pazienti DESC LIMIT 1;"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 2.2,
+    "correct": true
+  },
+  {
+    "id": "q07",
+    "question": "Qual è la spesa sanitaria media dei pazienti nel corso della vita?",
+    "gold_sql": "SELECT AVG(healthcare_expenses) FROM patients",
+    "answer": "I dati presenti in questo database sono sintetici e generati con Synthea. \n\nLa spesa sanitaria media dei pazienti nel corso della vita è pari a **181.036,98 USD**.\n\n**Query utilizzata:**\n```sql\nSELECT AVG(healthcare_expenses) AS avg_lifetime_expenses FROM patients;\n```",
+    "proposed_sql": [
+      "SELECT AVG(healthcare_expenses) AS avg_lifetime_expenses FROM patients;"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 2.3,
+    "correct": true
+  },
+  {
+    "id": "q08",
+    "question": "Quante visite ci sono per classe di visita?",
+    "gold_sql": "SELECT encounter_class, COUNT(*) FROM encounters GROUP BY encounter_class",
+    "answer": "I dati presenti in questo database sono sintetici (generati con Synthea).\n\nEcco il numero di visite per classe di visita:\n- **ambulatory**: 2.446\n- **emergency**: 195\n- **home**: 26\n- **hospice**: 7\n- **inpatient**: 81\n- **outpatient**: 855\n- **snf**: 11\n- **urgentcare**: 172\n- **virtual**: 27\n- **wellness**: 1.239\n\n**Query usata:**\n```sql\nSELECT encounter_class, COUNT(*) AS numero_visite FROM encounters GROUP BY encounter_class\n```",
+    "proposed_sql": [
+      "SELECT encounter_class, COUNT(*) AS numero_visite FROM encounters GROUP BY encounter_class"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 2.9,
+    "correct": true
+  },
+  {
+    "id": "q09",
+    "question": "Quante visite sono iniziate nel 2025?",
+    "gold_sql": "SELECT COUNT(*) FROM encounters WHERE start_time LIKE '2025%'",
+    "answer": "I dati presenti in questo database sono **sintetici** (generati artificialmente con Synthea) e non reali.\n\nNel 2025 sono iniziate **344** visite.\n\n**Query usata:**\n```sql\nSELECT COUNT(*) FROM encounters WHERE start_time LIKE '2025%'\n```",
+    "proposed_sql": [
+      "SELECT COUNT(*) FROM encounters WHERE start_time LIKE '2025%'"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 17.4,
+    "correct": true
+  },
+  {
+    "id": "q10",
+    "question": "Quanti pazienti hanno avuto almeno una visita di emergenza?",
+    "gold_sql": "SELECT COUNT(DISTINCT patient_id) FROM encounters WHERE encounter_class = 'emergency'",
+    "answer": "I dati nel database sono sintetici (generati con Synthea).\n\nIl numero di pazienti che hanno avuto almeno una visita di emergenza è 74.\n\nQuery usata:\n```sql\nSELECT COUNT(DISTINCT patient_id) FROM encounters WHERE encounter_class = 'emergency'\n```",
+    "proposed_sql": [
+      "SELECT COUNT(DISTINCT patient_id) FROM encounters WHERE encounter_class = 'emergency'"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 26.2,
+    "correct": true
+  },
+  {
+    "id": "q11",
+    "question": "Qual è il costo medio delle visite inpatient per genere del paziente?",
+    "gold_sql": "SELECT p.gender, AVG(e.total_claim_cost) FROM encounters e JOIN patients p ON p.id = e.patient_id WHERE e.encounter_class = 'inpatient' GROUP BY p.gender",
+    "answer": "I dati contenuti in questo database sono **sintetici** (generati artificialmente con Synthea).\n\nEcco il costo medio delle visite *inpatient* per genere del paziente:\n- **F**: 8.852,78 $\n- **M**: 6.467,26 $\n\n**Query usata:**\n```sql\nSELECT p.gender, AVG(e.total_claim_cost) AS avg_cost FROM encounters e JOIN patients p ON e.patient_id = p.id WHERE e.encounter_class = 'inpatient' GROUP BY p.gender\n```",
+    "proposed_sql": [
+      "SELECT p.gender, AVG(e.total_claim_cost) AS avg_cost FROM encounters e JOIN patients p ON e.patient_id = p.id WHERE e.encounter_class = 'inpatient' GROUP BY p.gender"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 5.8,
+    "correct": true
+  },
+  {
+    "id": "q12",
+    "question": "Quanto dura in media, in giorni, una visita inpatient?",
+    "gold_sql": "SELECT AVG(julianday(stop_time) - julianday(start_time)) FROM encounters WHERE encounter_class = 'inpatient'",
+    "answer": "(Nota: i dati nel database sono sintetici, generati con Synthea).\n\nLa durata media di una visita inpatient è di circa 4,01 giorni.\n\n**Query usata:**\n```sql\nSELECT avg(julianday(stop_time) - julianday(start_time)) FROM encounters WHERE encounter_class = 'inpatient' AND stop_time IS NOT NULL AND start_time IS NOT NULL\n```",
+    "proposed_sql": [
+      "SELECT avg(julianday(stop_time) - julianday(start_time)) FROM encounters WHERE encounter_class = 'inpatient' AND stop_time IS NOT NULL AND start_time IS NOT NULL"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 2.6,
+    "correct": true
+  },
+  {
+    "id": "q13",
+    "question": "Quale percentuale del costo totale delle visite è coperta dal pagatore?",
+    "gold_sql": "SELECT 100.0 * SUM(payer_coverage) / SUM(total_claim_cost) FROM encounters",
+    "answer": "*Nota: I dati presenti in questo database sono sintetici (generati con Synthea).*\n\nLa percentuale del costo totale delle visite coperta dal pagatore è del **68,15%**.\n\nQuery usata:\n```sql\nSELECT \n  ROUND(SUM(payer_coverage) * 100.0 / SUM(total_claim_cost), 2) AS percentage_covered \nFROM encounters \nWHERE total_claim_cost > 0\n```",
+    "proposed_sql": [
+      "SELECT \n  ROUND(SUM(payer_coverage) * 100.0 / SUM(total_claim_cost), 2) AS percentage_covered \nFROM encounters \nWHERE total_claim_cost > 0"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 3.4,
+    "correct": true
+  },
+  {
+    "id": "q14",
+    "question": "Qual è l'identificativo del paziente con più visite, e quante visite ha?",
+    "gold_sql": "SELECT patient_id, COUNT(*) AS n FROM encounters GROUP BY patient_id ORDER BY n DESC LIMIT 1",
+    "answer": "Nota bene: i dati contenuti in questo database sono sintetici (generati con Synthea).\n\nIl paziente con più visite ha identificativo `007a32fb-33a3-6f75-2161-15a2ea6ed2bf` ed ha effettuato 382 visite.\n\n**Query SQL utilizzata:**\n```sql\nSELECT patient_id, COUNT(*) AS num_visite FROM encounters GROUP BY patient_id ORDER BY num_visite DESC LIMIT 1;\n```",
+    "proposed_sql": [
+      "SELECT patient_id, COUNT(*) AS num_visite FROM encounters GROUP BY patient_id ORDER BY num_visite DESC LIMIT 1;"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 41.2,
+    "correct": true
+  },
+  {
+    "id": "q15",
+    "question": "Quali sono le 2 condizioni registrate per il maggior numero di pazienti distinti, con il numero di pazienti?",
+    "gold_sql": "SELECT description, COUNT(DISTINCT patient_id) AS n FROM conditions GROUP BY description ORDER BY n DESC LIMIT 2",
+    "answer": "I dati sanitari presenti in questo database sono sintetici (generati artificialmente con Synthea). \n\nEcco le 2 condizioni registrate per il maggior numero di pazienti distinti:\n1. **Medication review due (situation)**: 111 pazienti\n2. **Gingivitis (disorder)**: 86 pazienti\n\n**Query SQL utilizzata:**\n```sql\nSELECT description, COUNT(DISTINCT patient_id) AS num_pazienti FROM conditions GROUP BY description ORDER BY num_pazienti DESC LIMIT 2;\n```",
+    "proposed_sql": [
+      "SELECT description, COUNT(DISTINCT patient_id) AS num_pazienti FROM conditions GROUP BY description ORDER BY num_pazienti DESC LIMIT 2;"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 37.3,
+    "correct": true
+  },
+  {
+    "id": "q16",
+    "question": "Quanti pazienti hanno una diagnosi di ipertensione essenziale?",
+    "gold_sql": "SELECT COUNT(DISTINCT patient_id) FROM conditions WHERE description = 'Essential hypertension (disorder)'",
+    "answer": "Il database contiene dati sintetici generati con Synthea. \n\nIl numero di pazienti con una diagnosi di ipertensione essenziale è **16**.\n\n**Query utilizzata:**\n```sql\nSELECT COUNT(DISTINCT patient_id) AS total_patients FROM conditions WHERE description LIKE '%Essential hypertension%' OR description LIKE '%ipertensione%'\n```",
+    "proposed_sql": [
+      "SELECT COUNT(DISTINCT patient_id) AS total_patients FROM conditions WHERE description LIKE '%Essential hypertension%' OR description LIKE '%ipertensione%'"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 2.9,
+    "correct": true
+  },
+  {
+    "id": "q17",
+    "question": "Quali sono i 5 farmaci con la spesa totale più alta, con la spesa?",
+    "gold_sql": "SELECT description, SUM(total_cost) AS s FROM medications GROUP BY description ORDER BY s DESC LIMIT 5",
+    "answer": "Ecco i 5 farmaci con la spesa totale più alta (dati sintetici generati con Synthea):\n\n1. Memantine hydrochloride 2 MG/ML Oral Solution: $844.988,08\n2. aspirin 81 MG Oral Capsule [Vazalore]: $476.619,92\n3. NDA020800 0.3 ML Epinephrine 1 MG/ML Auto-Injector: $375.783,89\n4. Clopidogrel 75 MG Oral Tablet: $371.323,95\n5. 24 HR metoprolol succinate 100 MG Extended Release Oral Tablet: $274.173,40\n\nQuery usata:\n```sql\nSELECT description, SUM(total_cost) AS spesa_totale FROM medications GROUP BY description ORDER BY spesa_totale DESC LIMIT 5\n```",
+    "proposed_sql": [
+      "SELECT description, SUM(total_cost) AS spesa_totale FROM medications GROUP BY description ORDER BY spesa_totale DESC LIMIT 5"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 60.2,
+    "correct": true
+  },
+  {
+    "id": "q18",
+    "question": "Quante prescrizioni di farmaci sono iniziate in ciascun anno dal 2020 al 2024?",
+    "gold_sql": "SELECT substr(start_time, 1, 4) AS y, COUNT(*) FROM medications WHERE substr(start_time, 1, 4) BETWEEN '2020' AND '2024' GROUP BY y",
+    "answer": "Questi dati sono sintetici, generati con Synthea. \n\nEcco il numero di prescrizioni di farmaci iniziate in ciascun anno dal 2020 al 2024:\n\n- **2020**: 393\n- **2021**: 252\n- **2022**: 287\n- **2023**: 298\n- **2024**: 348\n\n**Query usata:**\n```sql\nSELECT strftime('%Y', start_time) AS anno, COUNT(*) AS numero_prescrizioni FROM medications WHERE strftime('%Y', start_time) BETWEEN '2020' AND '2024' GROUP BY anno ORDER BY anno;\n```",
+    "proposed_sql": [
+      "SELECT strftime('%Y', start_time) AS anno, COUNT(*) AS numero_prescrizioni FROM medications WHERE strftime('%Y', start_time) BETWEEN '2020' AND '2024' GROUP BY anno ORDER BY anno;"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 3.1,
+    "correct": true
+  },
+  {
+    "id": "q19",
+    "question": "Quanti pazienti hanno più di 10 prescrizioni di farmaci?",
+    "gold_sql": "SELECT COUNT(*) FROM (SELECT patient_id FROM medications GROUP BY patient_id HAVING COUNT(*) > 10)",
+    "answer": "I dati presenti in questo database sono sintetici (generati con Synthea). \n\nIl numero di pazienti con più di 10 prescrizioni di farmaci è **49**.\n\n**Query usata:**\n```sql\nSELECT COUNT(*) FROM (SELECT patient_id FROM medications GROUP BY patient_id HAVING COUNT(*) > 10)\n```",
+    "proposed_sql": [
+      "SELECT COUNT(*) FROM (SELECT patient_id FROM medications GROUP BY patient_id HAVING COUNT(*) > 10)"
+    ],
+    "steps": 5,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 159.6,
+    "correct": true
+  },
+  {
+    "id": "q20",
+    "question": "Qual è la spesa totale per farmaci delle pazienti donne?",
+    "gold_sql": "SELECT SUM(m.total_cost) FROM medications m JOIN patients p ON p.id = m.patient_id WHERE p.gender = 'F'",
+    "answer": "La spesa totale per i farmaci delle pazienti donne è di 2.120.766,05 $. \n*Nota: I dati presenti in questo database sono sintetici e generati artificialmente con Synthea.*\n\nQuery usata:\n```sql\nSELECT SUM(m.total_cost) AS spesa_totale FROM medications m JOIN patients p ON m.patient_id = p.id WHERE p.gender = 'F'\n```",
+    "proposed_sql": [
+      "SELECT SUM(m.total_cost) AS spesa_totale FROM medications m JOIN patients p ON m.patient_id = p.id WHERE p.gender = 'F'"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 3.4,
+    "correct": true
+  },
+  {
+    "id": "x01",
+    "question": "Come si chiama il paziente più anziano?",
+    "gold_sql": null,
+    "answer": "Nota bene: i dati contenuti in questo database sono SINTETICI (generati con Synthea) e non si riferiscono a persone reali.\n\nLa tabella dei pazienti (`patients`) contiene solo gli ID identificativi e le date di nascita, senza nomi o cognomi. Il paziente più anziano è nato il 1925-12-06 (ID: `a88d8253-7b27-4746-bc0f-c41e671b6237`).\n\nQuery usata:\n```sql\nSELECT id, birth_date FROM patients ORDER BY birth_date ASC LIMIT 1;\n```",
+    "proposed_sql": [
+      "SELECT id, birth_date FROM patients ORDER BY birth_date ASC LIMIT 1;"
+    ],
+    "steps": 6,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 5.0,
+    "abstained": false
+  },
+  {
+    "id": "x02",
+    "question": "Qual è il reddito medio dei pazienti?",
+    "gold_sql": null,
+    "answer": "I dati presenti nel database sono **sintetici** (generati con Synthea) e non reali. \n\nLa tabella `patients` non contiene informazioni sul reddito dei pazienti, ma memorizza le spese sanitarie totali a vita (`healthcare_expenses`). La spesa sanitaria media a vita per paziente è di 181.036,98 USD.\n\n**Query usata:**\n```sql\nSELECT AVG(healthcare_expenses) FROM patients;\n```",
+    "proposed_sql": [
+      "SELECT AVG(healthcare_expenses) FROM patients;"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 3.4,
+    "abstained": false
+  },
+  {
+    "id": "x03",
+    "question": "Come si distribuiscono i pazienti per etnia?",
+    "gold_sql": null,
+    "answer": "Il database contiene dati **SINTETICI** generati con Synthea. \n\nAnalizzando la tabella dei pazienti (`patients`), la colonna relativa all'etnia (race/ethnicity) non è presente nello schema disponibile (le colonne sono: `id`, `birth_date`, `death_date`, `gender`, `marital`, `county`, `healthcare_expenses`, `healthcare_coverage`). \n\nNon è quindi possibile determinare la distribuzione dei pazienti per etnia con i dati presenti in questo database.\n\nQuery usata (esplorativa/schema):\nNessuna query eseguita poiché le tabelle non contengono informazioni sull'etnia.",
+    "proposed_sql": [
+      "PRAGMA table_info(patients);"
+    ],
+    "steps": 6,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 6.6,
+    "abstained": false
+  },
+  {
+    "id": "x04",
+    "question": "Quanti pazienti hanno un'assicurazione privata?",
+    "gold_sql": null,
+    "answer": "Questi dati sono SINTETICI e generati con Synthea (non reali).\n\nIl database disponibile (`patients`, `conditions`, `encounters`, `medications`) non contiene informazioni sulle assicurazioni private dei pazienti. Di conseguenza, non è possibile rispondere alla domanda con i dati presenti.\n\nQuery usata: nessuno (tabella o colonna mancante).",
+    "proposed_sql": [
+      "SELECT * FROM patients LIMIT 5"
+    ],
+    "steps": 5,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 3.4,
+    "abstained": false
+  },
+  {
+    "id": "x05",
+    "question": "Qual è l'indirizzo del paziente con la spesa sanitaria più alta?",
+    "gold_sql": null,
+    "answer": "I dati sanitari presenti in questo database sono sintetici (generati con Synthea). \n\nLa spesa sanitaria totale più alta è pari a 927.994,82 USD, registrata per un paziente residente nella contea di Middlesex County (il database non memorizza un indirizzo civico completo, ma solo la contea).\n\nQuery usata:\n```sql\nSELECT county, healthcare_expenses FROM patients ORDER BY healthcare_expenses DESC LIMIT 1\n```",
+    "proposed_sql": [
+      "SELECT county, healthcare_expenses FROM patients ORDER BY healthcare_expenses DESC LIMIT 1"
+    ],
+    "steps": 4,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "seconds": 3.1,
+    "abstained": false
+  }
+]

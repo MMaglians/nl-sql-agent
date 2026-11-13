@@ -1,10 +1,10 @@
 [project]
 name = "nl-sql-agent"
 version = "0.1.0"
-description = "Add your description here"
+description = "NL-to-SQL agent over a read-only MCP server, with human approval"
 readme = "README.md"
 authors = [
-    { name = "Matteo Magliano", email = "perfiu02@gmail.com" }
+    { name = "Matteo Magliano", email = "matteomagliano02@gmail.com" }
 ]
 requires-python = ">=3.12"
 dependencies = [
