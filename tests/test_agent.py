@@ -35,14 +35,14 @@ class FakeLLM:
         self.models = FakeModels(**kw)
 
 
-def run(db_path, llm, confirm, max_steps=6):
+def run(db_path, llm, confirm, max_steps=6, **kwargs):
     """Real MCP server in memory, fake model, scripted human."""
     async def go():
         async with Client(create_server(db_path)) as mcp_client:
             tools = (await mcp_client.list_tools()).tools
             history, trace = [], TraceLog()
             answer, result = await run_turn(llm, "m", mcp_client, tools, history, "domanda",
-                                            confirm, max_steps=max_steps, trace=trace)
+                                            confirm, max_steps=max_steps, trace=trace, **kwargs)
             return answer, result, history, trace
     return asyncio.run(go())
 

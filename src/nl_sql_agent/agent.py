@@ -11,7 +11,7 @@ from nl_sql_agent.tracing import TraceLog
 
 NEEDS_APPROVAL = {"run_select"}
 
-SYSTEM_PROMPT = (
+PROMPT_V0 = (
     "Sei un analista di dati sanitari. Rispondi in italiano, in modo breve. "
     "Il database SQLite contiene dati SINTETICI generati con Synthea: dillo se "
     "l'utente sembra crederli reali. Prima di scrivere SQL usa list_tables e "
@@ -22,10 +22,30 @@ SYSTEM_PROMPT = (
     "risolvere con questi dati, dillo. Alla fine indica la query usata."
 )
 
+# v1: prima si controlla lo schema; se il dato non esiste non si esegue nessuna query.
+PROMPT_V1 = (
+    "Sei un analista di dati sanitari. Rispondi in italiano, in modo breve. "
+    "Il database SQLite contiene dati SINTETICI generati con Synthea: dillo se "
+    "l'utente sembra crederli reali. Prima di scrivere SQL usa list_tables e "
+    "describe_table: non inventare tabelle o colonne. "
+    "Se dopo aver letto lo schema i dati necessari non esistono, NON chiamare "
+    "run_select: rispondi che con questi dati la domanda non si può risolvere, "
+    "spiega quale dato manca e, se utile, proponi una domanda vicina senza eseguirla. "
+    "Non leggere righe intere per cercare un dato che lo schema non contiene. "
+    "Se invece i dati esistono, usa run_select con una sola SELECT in sintassi SQLite: "
+    "ogni numero della risposta deve venire dal suo risultato, mai dalla tua memoria, "
+    "e alla fine indica la query usata. "
+    "Se l'utente rifiuta una query, non riproporla uguale: chiedi cosa cambiare."
+)
 
-def make_config(declarations) -> types.GenerateContentConfig:
+PROMPTS = {"v0": PROMPT_V0, "v1": PROMPT_V1}
+SYSTEM_PROMPT = PROMPT_V0  # default invariato: chat e test esistenti usano la v0
+
+
+
+def make_config(declarations, system_prompt: str = SYSTEM_PROMPT) -> types.GenerateContentConfig:
     return types.GenerateContentConfig(
-        system_instruction=SYSTEM_PROMPT,
+        system_instruction= system_prompt,
         tools=[types.Tool(function_declarations=declarations)],
         automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
         temperature=0,
@@ -64,10 +84,11 @@ async def execute(mcp_client, name: str, args: dict, confirm, trace: TraceLog) -
 
 async def run_turn(llm, model: str, mcp_client, mcp_tools: list, history: list,
                    user_text: str, confirm, *, max_steps: int = 6,
-                   trace: TraceLog | None = None) -> tuple[str, dict | None]:
+                   trace: TraceLog | None = None,
+                   system_prompt: str = SYSTEM_PROMPT) -> tuple[str, dict | None]:
     """One turn. Returns the answer and the last successful query result."""
     trace = trace or TraceLog()
-    config = make_config(to_declarations(mcp_tools))
+    config = make_config(to_declarations(mcp_tools), system_prompt)
     history.append(types.Content(role="user", parts=[types.Part(text=user_text)]))
     trace.event("user", text=user_text)
     last_result = None
