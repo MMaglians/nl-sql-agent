@@ -11,11 +11,11 @@ from nl_sql_agent.tool_policy import ALLOWED_TOOLS, ToolPolicyError, load_pins, 
 DB_PATH = Path("data/healthcare.db").resolve()
 
 
-def server_parameters() -> StdioServerParameters:
+def server_parameters(db_path: Path = DB_PATH) -> StdioServerParameters:
     return StdioServerParameters(
         command=sys.executable,
         args=["-m", "nl_sql_agent.server"],
-        env={"NL_SQL_DB": str(DB_PATH)},
+        env={"NL_SQL_DB": str(Path(db_path).resolve())},
     )
 
 

@@ -31,6 +31,7 @@ async def main() -> None:
         tools = (await mcp_client.list_tools()).tools
         verify_tools(tools, load_pins())
         print(f"Modello: {model}. Tool verificati: {[t.name for t in tools]}")
+        print("Stai usando un assistente AI: query e risposte sono generate da un modello e vanno verificate.")
         print("Comandi: /grafico salva il grafico dell'ultimo risultato, /esci chiude.")
         
         while True:
