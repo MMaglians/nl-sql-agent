@@ -39,7 +39,7 @@ PROMPT_V1 = (
 )
 
 PROMPTS = {"v0": PROMPT_V0, "v1": PROMPT_V1}
-SYSTEM_PROMPT = PROMPT_V0  # default invariato: chat e test esistenti usano la v0
+SYSTEM_PROMPT = PROMPT_V1  # v1 passa i criteri di eval/criteria_v1.md; v0 resta per il confronto
 
 
 

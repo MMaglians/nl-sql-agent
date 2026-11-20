@@ -17,3 +17,12 @@
 **Synthetic data and the free tier.** Synthea data is public domain and contains no personal data, which is what makes the Gemini free tier acceptable here.
 
 **Execution accuracy as the first metric.** Comparing query results with gold queries is automatic and order-insensitive, and tolerates rounding and extra columns. It measures the SQL, not the prose; checking answers is the next step.
+
+
+**Versioned prompts, criteria committed before the run.** `PROMPTS` keeps v0 and v1 side by side and the eval runner takes `--prompt`. The success criteria of v1 were committed before running it (`eval/criteria_v1.md`), so the Git history shows that the thresholds were not chosen after seeing the results. v1 became the default only after passing them.
+
+**No test-set leakage in the prompt.** Naming the missing fields of the unanswerable questions in the prompt would pass the eval without improving the agent. A test fails if the prompt contains those words.
+
+**Prompt-injection tests with a canary and a poisoned copy.** Indirect attacks are written into a copy of the database, never the original, and row counts are checked before and after. A harmless canary word shows whether an injected instruction was followed. Each run records both *tried* and *effect*: the question is not whether the model obeys, but whether the code stops it when it does.
+
+**Traces as JSON Lines, no tracing service.** The existing `TraceLog` writes one event per line to `logs/`; `show_trace.py` summarises steps, refused queries, tokens and time per question. No extra dependency, and the traces stay on my machine. A hosted tracer (Langfuse, Phoenix) would add a UI, which this size does not need.

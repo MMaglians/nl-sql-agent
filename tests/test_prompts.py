@@ -8,8 +8,8 @@ from test_agent import FakeLLM, run, text_response
 QUESTIONS = Path(__file__).resolve().parents[1] / "eval" / "questions.json"
 
 
-def test_default_prompt_is_still_v0():
-    assert SYSTEM_PROMPT == PROMPT_V0 and PROMPTS == {"v0": PROMPT_V0, "v1": PROMPT_V1}
+def test_default_prompt_is_v1_and_v0_is_kept():
+    assert SYSTEM_PROMPT == PROMPT_V1 and PROMPTS == {"v0": PROMPT_V0, "v1": PROMPT_V1}
 
 
 def test_chosen_prompt_reaches_the_model(db_path):
